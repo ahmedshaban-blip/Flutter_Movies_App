@@ -1,0 +1,52 @@
+name: movie_app
+description: A new Flutter project with Clean Architecture by Abdalluh Essam
+# Flutter version on machine: 3.35.6
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  animate_do: null
+  animator: null
+  cached_network_image: null
+  cupertino_icons: null
+  dartz: null
+  dio: ^5.9.0
+  easy_localization: null
+  equatable: null
+  flutter:
+    sdk: flutter
+  flutter_animate: null
+  flutter_bloc: null
+  flutter_launcher_icons: null
+  flutter_native_splash: null
+  flutter_screenutil: null
+  flutter_svg: null
+  freezed_annotation: null
+  get_it: null
+  google_fonts: null
+  intl: null
+  json_annotation: null
+  lottie: null
+  shared_preferences: null
+
+dev_dependencies:
+  bloc_test: null
+  build_runner: null
+  flutter_lints: null
+  flutter_test:
+    sdk: flutter
+  freezed: null
+  json_serializable: null
+  mockito: null
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/lottie/
+    - assets/lang/
+    - assets/logo/
