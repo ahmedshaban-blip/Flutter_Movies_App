@@ -29,7 +29,7 @@ dependencies:
   intl: null
   json_annotation: null
   lottie: null
-  shared_preferences: null
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   bloc_test: null

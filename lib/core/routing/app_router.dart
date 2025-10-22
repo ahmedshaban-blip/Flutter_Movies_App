@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/features/bottom_nav.dart';
 import 'package:movie_app/features/details/presentation/pages/details_page.dart';
 import 'package:movie_app/features/home/data/models/home_model.dart';
 import 'package:movie_app/features/home/presentation/pages/home_page.dart';
@@ -21,6 +22,8 @@ class AppRouter {
         return _createRoute(DetailsPage(
           movie: movie,
         ));
+      case Routes.bottomNabvar:
+        return _createRoute(const BottomNavBar());
 
       default:
         return null;
