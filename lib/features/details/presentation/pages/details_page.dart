@@ -1,94 +1,13 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:movie_app/features/home/data/models/home_model.dart';
-// import '../cubit/details_cubit.dart';
-// import '../cubit/details_state.dart';
-
-// class DetailsPage extends StatelessWidget {
-//   final Movie movie;
-//   const DetailsPage({super.key, required this.movie});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocProvider(
-//       create: (_) => DetailsCubit(),
-//       child: Container(
-//         decoration: BoxDecoration(
-//           gradient: LinearGradient(
-//             begin: Alignment.topLeft,
-//             end: Alignment.bottomRight,
-//             colors: [
-//               const Color(0xFF1a1a2e),
-//               const Color(0xFF16213e),
-//               const Color(0xFF0f3460),
-//             ],
-//           ),
-//         ),
-//         child: Scaffold(
-//           backgroundColor: Colors.transparent,
-//           appBar: AppBar(title: const Text('Details Page')),
-//           body: BlocBuilder<DetailsCubit, DetailsState>(
-//             builder: (context, state) {
-//               if (state is DetailsLoading) {
-//                 return const Center(child: CircularProgressIndicator());
-//               } else if (state is DetailsFailure) {
-//                 return Center(child: Text('Error: ${state.error}'));
-//               }
-//               return Card(
-//                 elevation: 8,
-//                 shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(20.0),
-//                 ),
-//                 child: Padding(
-//                   padding: const EdgeInsets.all(16.0),
-//                   child: Column(
-//                     mainAxisSize: MainAxisSize.min,
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       ClipRRect(
-//                         borderRadius: BorderRadius.circular(12.0),
-//                         child: Image.network(
-//                           'https://image.tmdb.org/t/p/w500${movie.poster_path}',
-//                           width: double.infinity,
-//                           height: 250,
-//                           fit: BoxFit.cover,
-//                         ),
-//                       ),
-//                       const SizedBox(height: 12),
-//                       Text(
-//                         movie.title,
-//                         style: const TextStyle(
-//                           fontSize: 20,
-//                           fontWeight: FontWeight.bold,
-//                         ),
-//                       ),
-//                       const SizedBox(height: 4),
-//                       Text(
-//                         'Release Date: ${movie.release_date}',
-//                         style:
-//                             const TextStyle(fontSize: 16, color: Colors.grey),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               );
-//             },
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/features/favorite/presentation/pages/shared_pref.dart';
 import 'package:movie_app/features/home/data/models/home_model.dart';
 import '../cubit/details_cubit.dart';
 import '../cubit/details_state.dart';
 
 class DetailsPage extends StatelessWidget {
   final Movie movie;
-  const DetailsPage({super.key, required this.movie});
+  DetailsPage({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +50,12 @@ class DetailsPage extends StatelessWidget {
                     color: Colors.black.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.bookmark_border, color: Colors.white),
+                  child: InkWell(
+                      onTap: () {
+                        addtofav(movie);
+                      },
+                      child: const Icon(Icons.bookmark_border,
+                          color: Colors.white)),
                 ),
                 onPressed: () {},
               ),
@@ -412,5 +336,10 @@ class DetailsPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  SharedPref sharedPref = SharedPref();
+  void addtofav(Movie movie) {
+    sharedPref.addToFav(movie);
   }
 }

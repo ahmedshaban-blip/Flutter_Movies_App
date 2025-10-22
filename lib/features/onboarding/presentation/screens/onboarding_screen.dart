@@ -71,7 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   onPressed: () {
                     if (isLastPage) {
                       Navigator.pushNamedAndRemoveUntil(
-                          context, '/homeScreen', (route) => false);
+                          context, '/bottomNavBar', (route) => false);
                     } else {
                       controller.nextPage(
                         duration: const Duration(milliseconds: 500),
