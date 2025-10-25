@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:movie_app/core/routing/routes.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
