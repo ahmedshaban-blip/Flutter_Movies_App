@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/features/favorite/presentation/pages/shared_pref.dart';
@@ -45,6 +47,12 @@ class FavoritePage extends StatelessWidget {
               return FutureBuilder(
                   future: sharedPref.getFav(),
                   builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
                     return ListView.builder(
                       itemCount: snapshot.data?.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -58,7 +66,7 @@ class FavoritePage extends StatelessWidget {
                               Stack(
                                 children: [
                                   Hero(
-                                    tag: 'movie-${movie?.id}',
+                                    tag: 'movie-${movie.id}',
                                     child: Container(
                                       height: 280,
                                       width: double.infinity,
