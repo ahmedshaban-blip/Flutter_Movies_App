@@ -1,34 +1,79 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
-
+import 'package:flutter/services.dart';
 
 class AppTheme {
- static ThemeData get lightTheme => ThemeData(
-   primaryColor: AppColor.primaryColor,
-   scaffoldBackgroundColor: AppColor.backgroundColor,
-   fontFamily: 'Nunito',
-   brightness: Brightness.light,
-   appBarTheme: const AppBarTheme(
-     backgroundColor: AppColor.white,
-     elevation: 0,
-     centerTitle: true,
-     iconTheme: IconThemeData(color: AppColor.black),
-     titleTextStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColor.black),
-   ),
- );
+  static ThemeData get lightTheme {
+    final scheme = ColorScheme.fromSeed(
+      seedColor: AppColors.brandPrimary,
+      brightness: Brightness.light,
+    );
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: scheme,
+      scaffoldBackgroundColor: scheme.background,
+      appBarTheme: AppBarTheme(
+        backgroundColor: scheme.surface,
+        foregroundColor: scheme.onSurface,
+        elevation: 0,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          systemNavigationBarIconBrightness: Brightness.dark,
+        ),
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: scheme.primary),
+      textTheme: const TextTheme().apply(
+        bodyColor: scheme.onBackground,
+        displayColor: scheme.onBackground,
+      ),
+      extensions: <ThemeExtension<dynamic>>[
+        AppSemanticColors.common,
+        AppGradients.light(scheme),
+      ],
+    );
+  }
 
+  static ThemeData get darkTheme {
+    final base = ColorScheme.fromSeed(
+      seedColor: AppColors.brandPrimary,
+      brightness: Brightness.dark,
+    );
+    final scheme = base.copyWith(
+      background: AppColors.bgDark,
+      surface: AppColors.cardGradStart,
+      surfaceVariant: AppColors.cardGradEnd,
+      primary: AppColors.brandPrimary,
+      onBackground: Colors.white,
+      onSurface: Colors.white,
+      onPrimary: Colors.white,
+      // اجعل error كما تريد
+      error: const Color(0xFFEF5350),
+    );
 
- static ThemeData get darkTheme => ThemeData(
-   primaryColor: AppColor.primaryColor,
-   scaffoldBackgroundColor: Colors.black,
-   fontFamily: 'Nunito',
-   brightness: Brightness.dark,
-   appBarTheme: const AppBarTheme(
-     backgroundColor: Colors.black,
-     elevation: 0,
-     centerTitle: true,
-     iconTheme: IconThemeData(color: AppColor.white),
-     titleTextStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColor.white),
-   ),
- );
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: scheme,
+      scaffoldBackgroundColor: scheme.background,
+      appBarTheme: AppBarTheme(
+        backgroundColor: scheme.surface,
+        foregroundColor: scheme.onSurface,
+        elevation: 0,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ),
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: scheme.primary),
+      textTheme: const TextTheme().apply(
+        bodyColor: scheme.onBackground,
+        displayColor: scheme.onBackground,
+      ),
+      extensions: <ThemeExtension<dynamic>>[
+        AppSemanticColors.common,
+        AppGradients.dark(scheme),
+      ],
+    );
+  }
 }

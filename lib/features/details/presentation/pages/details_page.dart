@@ -1,19 +1,24 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/core/theme/app_colors.dart';
 import 'package:movie_app/features/favorite/presentation/pages/shared_pref.dart';
 import 'package:movie_app/features/home/data/models/home_model.dart';
 import '../cubit/details_cubit.dart';
 import '../cubit/details_state.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class DetailsPage extends StatelessWidget {
   final Movie movie;
   DetailsPage({super.key, required this.movie});
 
+  final SharedPref sharedPref = SharedPref();
+
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final gradients = Theme.of(context).extension<AppGradients>()!;
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+
     return BlocProvider(
       create: (_) => DetailsCubit(),
       child: Container(
@@ -21,11 +26,7 @@ class DetailsPage extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              const Color(0xFF1a1a2e),
-              const Color(0xFF16213e),
-              const Color(0xFF0f3460),
-            ],
+            colors: gradients.bgGradient,
           ),
         ),
         child: Scaffold(
@@ -38,10 +39,10 @@ class DetailsPage extends StatelessWidget {
               icon: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: scheme.onSurface.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.arrow_back, color: Colors.white),
+                child: Icon(Icons.arrow_back, color: scheme.onSurface),
               ),
               onPressed: () => Navigator.pop(context),
             ),
@@ -50,15 +51,13 @@ class DetailsPage extends StatelessWidget {
                 icon: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
+                    color: scheme.onSurface.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: InkWell(
-                      onTap: () {
-                        addtofav(movie);
-                      },
-                      child: const Icon(Icons.bookmark_border,
-                          color: Colors.white)),
+                    onTap: () => sharedPref.addToFav(movie),
+                    child: Icon(Icons.bookmark_border, color: scheme.onSurface),
+                  ),
                 ),
                 onPressed: () {},
               ),
@@ -67,15 +66,22 @@ class DetailsPage extends StatelessWidget {
           body: BlocBuilder<DetailsCubit, DetailsState>(
             builder: (context, state) {
               if (state is DetailsLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(color: scheme.primary),
+                );
               } else if (state is DetailsFailure) {
-                return Center(child: Text('Error: ${state.error}'));
+                return Center(
+                  child: Text(
+                    'Error: ${state.error}',
+                    style: textTheme.bodyMedium
+                        ?.copyWith(color: scheme.onBackground),
+                  ),
+                );
               }
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Hero Image Section
                     Stack(
                       children: [
                         Hero(
@@ -97,8 +103,8 @@ class DetailsPage extends StatelessWidget {
                                   end: Alignment.bottomCenter,
                                   colors: [
                                     Colors.transparent,
-                                    Colors.black.withOpacity(0.7),
-                                    Colors.black.withOpacity(0.95),
+                                    scheme.scrim.withOpacity(0.7),
+                                    scheme.background.withOpacity(0.95),
                                   ],
                                   stops: const [0.0, 0.7, 1.0],
                                 ),
@@ -106,22 +112,21 @@ class DetailsPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        // Rating Badge
                         Positioned(
                           bottom: 20,
                           right: 20,
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
+                                horizontal: 16, vertical: 12),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFF5959),
+                              color: _ratingColor(movie.vote_average, semantic)
+                                  .withOpacity(0.95),
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
                                   color:
-                                      const Color(0xFFFF5959).withOpacity(0.4),
+                                      _ratingColor(movie.vote_average, semantic)
+                                          .withOpacity(0.4),
                                   blurRadius: 15,
                                   offset: const Offset(0, 5),
                                 ),
@@ -130,17 +135,13 @@ class DetailsPage extends StatelessWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(
-                                  Icons.star,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
+                                const Icon(Icons.star,
+                                    color: Colors.white, size: 20),
                                 const SizedBox(width: 6),
                                 Text(
                                   movie.vote_average.toStringAsFixed(1),
-                                  style: const TextStyle(
+                                  style: textTheme.titleSmall?.copyWith(
                                     color: Colors.white,
-                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -150,8 +151,6 @@ class DetailsPage extends StatelessWidget {
                         ),
                       ],
                     ),
-
-                    // Content Section
                     Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
@@ -160,67 +159,52 @@ class DetailsPage extends StatelessWidget {
                           // Title
                           Text(
                             movie.title,
-                            style: const TextStyle(
-                              fontSize: 28,
+                            style: textTheme.headlineSmall?.copyWith(
+                              color: scheme.onSurface,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
                               height: 1.2,
                             ),
                           ),
                           const SizedBox(height: 16),
 
-                          // Info Chips
                           Row(
                             children: [
-                              _buildInfoChip(
-                                icon: Icons.calendar_today,
-                                label: movie.release_date.substring(0, 4),
-                              ),
+                              _buildInfoChip(context,
+                                  icon: Icons.calendar_today,
+                                  label: movie.release_date.substring(0, 4)),
                               const SizedBox(width: 10),
-                              _buildInfoChip(
-                                icon: Icons.trending_up,
-                                label: movie.popularity.toInt().toString(),
-                              ),
+                              _buildInfoChip(context,
+                                  icon: Icons.trending_up,
+                                  label: movie.popularity.toInt().toString()),
                               const SizedBox(width: 10),
-                              _buildInfoChip(
-                                icon: Icons.people,
-                                label: '${movie.vote_count.toInt()} votes',
-                              ),
+                              _buildInfoChip(context,
+                                  icon: Icons.people,
+                                  label: '${movie.vote_count.toInt()} votes'),
                             ],
                           ),
                           const SizedBox(height: 20),
 
-                          // Star Rating Display
                           Row(
                             children: [
                               ...List.generate(5, (index) {
-                                double rating = movie.vote_average / 2;
+                                final rating = movie.vote_average / 2;
                                 if (index < rating.floor()) {
-                                  return const Icon(
-                                    Icons.star,
-                                    color: Color(0xFFFF5959),
-                                    size: 24,
-                                  );
+                                  return Icon(Icons.star,
+                                      color: scheme.primary, size: 24);
                                 } else if (index < rating) {
-                                  return const Icon(
-                                    Icons.star_half,
-                                    color: Color(0xFFFF5959),
-                                    size: 24,
-                                  );
+                                  return Icon(Icons.star_half,
+                                      color: scheme.primary, size: 24);
                                 } else {
-                                  return Icon(
-                                    Icons.star_border,
-                                    color: Colors.grey[600],
-                                    size: 24,
-                                  );
+                                  return Icon(Icons.star_border,
+                                      color: scheme.onSurface.withOpacity(0.4),
+                                      size: 24);
                                 }
                               }),
                               const SizedBox(width: 8),
                               Text(
                                 '${movie.vote_average.toStringAsFixed(1)}/10',
-                                style: TextStyle(
-                                  color: Colors.grey[400],
-                                  fontSize: 16,
+                                style: textTheme.bodyMedium?.copyWith(
+                                  color: scheme.onSurface.withOpacity(0.6),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -229,19 +213,15 @@ class DetailsPage extends StatelessWidget {
                           const SizedBox(height: 24),
 
                           // Divider
-                          Divider(
-                            color: Colors.grey[800],
-                            thickness: 1,
-                          ),
+                          Divider(color: scheme.outlineVariant, thickness: 1),
                           const SizedBox(height: 20),
 
                           // Overview Section
-                          const Text(
+                          Text(
                             'Overview',
-                            style: TextStyle(
-                              fontSize: 22,
+                            style: textTheme.titleLarge?.copyWith(
+                              color: scheme.onSurface,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -249,9 +229,8 @@ class DetailsPage extends StatelessWidget {
                             movie.overview.isNotEmpty
                                 ? movie.overview
                                 : 'No overview available for this movie.',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[300],
+                            style: textTheme.bodyLarge?.copyWith(
+                              color: scheme.onSurface.withOpacity(0.75),
                               height: 1.6,
                               letterSpacing: 0.3,
                             ),
@@ -259,7 +238,6 @@ class DetailsPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 30),
 
-                          // Action Buttons
                           Row(
                             children: [
                               Expanded(
@@ -268,31 +246,29 @@ class DetailsPage extends StatelessWidget {
                                   icon: const Icon(Icons.play_arrow),
                                   label: const Text('Watch Trailer'),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFFF5959),
-                                    foregroundColor: Colors.white,
+                                    backgroundColor: scheme.primary,
+                                    foregroundColor: scheme.onPrimary,
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 16),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
                                     elevation: 5,
                                   ),
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              ElevatedButton(
+                              OutlinedButton(
                                 onPressed: () {},
-                                style: ElevatedButton.styleFrom(
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: scheme.onSurface,
                                   backgroundColor:
-                                      Colors.white.withOpacity(0.1),
-                                  foregroundColor: Colors.white,
+                                      scheme.surface.withOpacity(0.12),
+                                  side: BorderSide(
+                                      color: scheme.onSurface.withOpacity(0.3)),
                                   padding: const EdgeInsets.all(16),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    side: BorderSide(
-                                      color: Colors.white.withOpacity(0.3),
-                                    ),
-                                  ),
+                                      borderRadius: BorderRadius.circular(12)),
                                 ),
                                 child: const Icon(Icons.share),
                               ),
@@ -312,28 +288,28 @@ class DetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoChip({required IconData icon, required String label}) {
+  Widget _buildInfoChip(BuildContext context,
+      {required IconData icon, required String label}) {
+    final scheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: scheme.surface.withOpacity(0.12),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.2),
-          width: 1,
-        ),
+        border: Border.all(color: scheme.onSurface.withOpacity(0.2), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: const Color(0xFFFF5959), size: 16),
+          Icon(icon, color: scheme.primary, size: 16),
           const SizedBox(width: 6),
           Text(
             label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
+            style: textTheme.labelMedium?.copyWith(
+              color: scheme.onSurface,
               fontWeight: FontWeight.w500,
+              fontSize: 13,
             ),
           ),
         ],
@@ -341,8 +317,9 @@ class DetailsPage extends StatelessWidget {
     );
   }
 
-  SharedPref sharedPref = SharedPref();
-  void addtofav(Movie movie) {
-    sharedPref.addToFav(movie);
+  Color _ratingColor(double rating, AppSemanticColors semantic) {
+    if (rating >= 8.0) return semantic.ratingHigh;
+    if (rating >= 6.0) return semantic.ratingMid;
+    return semantic.ratingLow;
   }
 }
