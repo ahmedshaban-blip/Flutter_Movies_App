@@ -23,6 +23,7 @@ dependencies:
   flutter_native_splash: null
   flutter_screenutil: null
   flutter_svg: null
+  fluttertoast: ^9.0.0
   freezed_annotation: null
   get_it: null
   google_fonts: null

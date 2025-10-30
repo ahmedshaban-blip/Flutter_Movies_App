@@ -4,9 +4,14 @@ class FavoriteInitial extends FavoriteState {}
 
 class FavoriteLoading extends FavoriteState {}
 
-class FavoriteSuccess extends FavoriteState {
-  // final result;
-  // Success(this.result);
+class FavoriteLoaded extends FavoriteState {
+  final result;
+  FavoriteLoaded(this.result);
+}
+
+class FavoriteRemoved extends FavoriteState {
+  final result;
+  FavoriteRemoved(this.result);
 }
 
 class FavoriteFailure extends FavoriteState {

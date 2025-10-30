@@ -6,6 +6,7 @@ import 'package:movie_app/features/favorite/presentation/pages/shared_pref.dart'
 import 'package:movie_app/features/home/data/models/home_model.dart';
 import '../cubit/details_cubit.dart';
 import '../cubit/details_state.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class DetailsPage extends StatelessWidget {
   final Movie movie;
