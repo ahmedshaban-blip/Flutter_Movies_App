@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/core/cubit/theme/theme_cubit.dart';
 import 'package:movie_app/core/theme/app_colors.dart';
 import 'package:movie_app/features/favorite/presentation/pages/shared_pref.dart';
 import 'package:movie_app/features/home/data/models/home_model.dart';
@@ -54,6 +55,21 @@ class _FavoritePageState extends State<FavoritePage> {
                 ),
               ],
             ),
+            actions: [
+              BlocSelector<ThemeCubit, ThemeState, ThemeMode>(
+                selector: (state) => state.themeMode,
+                builder: (context, mode) {
+                  return IconButton(
+                    icon: Icon(
+                      mode == ThemeMode.light
+                          ? Icons.dark_mode
+                          : Icons.light_mode,
+                    ),
+                    onPressed: () => context.read<ThemeCubit>().toggleTheme(),
+                  );
+                },
+              ),
+            ],
           ),
           body: BlocBuilder<FavoriteCubit, FavoriteState>(
             builder: (context, state) {
