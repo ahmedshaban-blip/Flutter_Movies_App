@@ -55,4 +55,16 @@ class ApiClient {
       rethrow;
     }
   }
+
+  Future<List<Movie>> fetchUpcomingMovies() async {
+    Response response = await dio.get(
+      "/3/movie/upcoming?api_key=29cf44b93ca83bf48d9356395476f7ad",
+    );
+    if (response.statusCode == 200) {
+      List movies = response.data['results'];
+      return movies.map((e) => Movie.fromJson(e)).toList();
+    } else {
+      throw Exception("Failed to load movies");
+    }
+  }
 }

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_app/core/cubit/theme/theme_cubit.dart';
 import 'package:movie_app/core/routing/routes.dart';
 import 'package:movie_app/core/theme/app_colors.dart';
-import '../cubit/home_cubit.dart';
-import '../cubit/home_state.dart';
+import '../cubit/upcoming_cubit.dart';
+import '../cubit/upcoming_state.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class UpcomingPage extends StatelessWidget {
+  const UpcomingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,81 +16,49 @@ class HomePage extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     return BlocProvider(
-      create: (_) => HomeCubit()..doSomething(),
+      create: (_) => UpcomingCubit()..doSomething(),
       child: Scaffold(
         backgroundColor: scheme.background,
         appBar: AppBar(
           title: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.movie, color: scheme.onSurface, size: 28),
+              Icon(Icons.upcoming_outlined, size: 28, color: scheme.onSurface),
               const SizedBox(width: 8),
               Text(
-                'Movies',
+                'Upcoming Movies',
                 style: textTheme.titleLarge?.copyWith(
+                  color: scheme.onSurface,
                   fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
                 ),
               ),
             ],
           ),
           centerTitle: true,
           actions: [
-            BlocSelector<ThemeCubit, ThemeState, ThemeMode>(
-              selector: (state) => state.themeMode,
-              builder: (context, mode) {
-                return IconButton(
-                  icon: Icon(
-                    mode == ThemeMode.light
-                        ? Icons.dark_mode
-                        : Icons.light_mode,
-                  ),
-                  onPressed: () => context.read<ThemeCubit>().toggleTheme(),
-                );
-              },
+            IconButton(
+              icon:
+                  Icon(Icons.search, color: scheme.onSurface.withOpacity(0.7)),
+              onPressed: () {},
             ),
           ],
         ),
-        body: BlocBuilder<HomeCubit, HomeState>(
+        body: BlocBuilder<UpcomingCubit, UpcomingState>(
           builder: (context, state) {
-            if (state is HomeLoading) {
+            if (state is UpcomingLoading) {
               return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(scheme.primary),
-                      strokeWidth: 3,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Loading Movies...',
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: scheme.onBackground.withOpacity(0.7),
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
+                child: CircularProgressIndicator(color: scheme.primary),
+              );
+            } else if (state is UpcomingFailure) {
+              return Center(
+                child: Text(
+                  'Error: ${state.error}',
+                  style: textTheme.bodyMedium
+                      ?.copyWith(color: scheme.onBackground),
                 ),
               );
-            } else if (state is HomeFailure) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.error_outline, color: scheme.error, size: 64),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Error: ${state.error}',
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: scheme.onBackground.withOpacity(0.7),
-                        fontSize: 16,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              );
-            } else if (state is HomeSuccess) {
+            } else if (state is UpcomingSuccess) {
               final result = state.result;
               return Container(
                 decoration: BoxDecoration(
@@ -110,11 +77,13 @@ class HomePage extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: InkWell(
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          Routes.detailsScreen,
-                          arguments: movie,
-                        ),
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            Routes.detailsScreen,
+                            arguments: movie,
+                          );
+                        },
                         borderRadius: BorderRadius.circular(20.0),
                         child: Container(
                           decoration: BoxDecoration(
@@ -219,11 +188,13 @@ class HomePage extends StatelessWidget {
                                             Text(
                                               movie.vote_average
                                                   .toStringAsFixed(1),
-                                              style: textTheme.labelLarge
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelLarge
                                                   ?.copyWith(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                             ),
                                           ],
                                         ),
@@ -259,11 +230,13 @@ class HomePage extends StatelessWidget {
                                             Text(
                                               movie.popularity
                                                   .toStringAsFixed(0),
-                                              style: textTheme.labelMedium
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelMedium
                                                   ?.copyWith(
-                                                color: scheme.onSecondary,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                                    color: scheme.onSecondary,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                             ),
                                           ],
                                         ),
@@ -366,10 +339,9 @@ class HomePage extends StatelessWidget {
             }
             return Center(
               child: Text(
-                'Unknown state',
-                style: textTheme.bodyMedium?.copyWith(
-                  color: scheme.onBackground.withOpacity(0.7),
-                ),
+                'Upcoming Page',
+                style: textTheme.bodyMedium
+                    ?.copyWith(color: scheme.onBackground.withOpacity(0.7)),
               ),
             );
           },
