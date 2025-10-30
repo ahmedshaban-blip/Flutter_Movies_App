@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/core/cubit/theme/theme_cubit.dart';
+
 import 'package:movie_app/core/routing/routes.dart';
 import 'package:movie_app/core/theme/app_colors.dart';
 import '../cubit/upcoming_cubit.dart';
@@ -37,10 +39,18 @@ class UpcomingPage extends StatelessWidget {
           ),
           centerTitle: true,
           actions: [
-            IconButton(
-              icon:
-                  Icon(Icons.search, color: scheme.onSurface.withOpacity(0.7)),
-              onPressed: () {},
+            BlocSelector<ThemeCubit, ThemeState, ThemeMode>(
+              selector: (state) => state.themeMode,
+              builder: (context, mode) {
+                return IconButton(
+                  icon: Icon(
+                    mode == ThemeMode.light
+                        ? Icons.dark_mode
+                        : Icons.light_mode,
+                  ),
+                  onPressed: () => context.read<ThemeCubit>().toggleTheme(),
+                );
+              },
             ),
           ],
         ),
