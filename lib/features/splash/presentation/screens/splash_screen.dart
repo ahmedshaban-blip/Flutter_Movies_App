@@ -37,10 +37,6 @@
 //   }
 // }
 
-
-
-
-
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -63,7 +59,6 @@ class _SplashScreenState extends State<SplashScreen>
     _controller = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,
-      
     );
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -91,7 +86,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _controller.forward();
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 5), () {
       Navigator.pushReplacementNamed(context, '/onBoardingScreen');
     });
   }

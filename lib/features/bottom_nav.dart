@@ -25,9 +25,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
         },
         type: BottomNavigationBarType.fixed,
         backgroundColor: const Color(0xFF1a1a2e),
-        selectedItemColor: const Color(0xFF0f3460),
+        selectedItemColor: const Color.fromARGB(255, 255, 255, 255),
+        selectedIconTheme: const IconThemeData(color: Colors.indigo),
         unselectedItemColor: Colors.white.withOpacity(0.6),
-        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+        selectedLabelStyle: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+            color: Colors.cyanAccent),
         unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
         elevation: 10,
         items: const [
@@ -37,7 +41,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark),
-            label: 'Watchlist',
+            label: 'Favorite ',
           ),
         ],
       ),
