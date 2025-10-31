@@ -343,7 +343,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 **Ahmed Shaban**
 
 - GitHub: [@ahmedshaban-blip](https://github.com/ahmedshaban-blip)
-- LinkedIn: [My LinkedIn](www.linkedin.com/in/ahmed-shaban-front-cross)
+
+- LinkedIn:  www.linkedin.com/in/ahmed-shaban-front-cross
 
 ---
 
